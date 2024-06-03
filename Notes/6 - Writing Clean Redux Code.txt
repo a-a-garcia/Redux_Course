@@ -1,0 +1,46 @@
+2 - Structuring Files and Folders
+
+we've structured our files like thus so Faster
+
+src/
+    actions.js
+    actionTypes.js
+    reducer.js
+
+We want all of these files inside a folder called store. Our state management code should be completely isolated from our UI/presentation code. Separation of concerns
+
+src/
+    store/
+        actions.js
+        actionTypes.js
+        reducer.js
+
+We should also group files by feature. Each sub-domain should have its own actions, action types and reducer.
+src/
+    store/
+        feature/
+            actions.js
+            actionTypes.js
+            reducer.js
+        auth/
+            actions.js
+            actionTypes.js
+            reducer.js
+        bugs/
+        projects/
+
+There is also the "Ducks" pattern, where action types, actions and the reducer for a specific domain is bundled into a duck - like `auth.js
+
+src/
+    store/
+        auth.js
+        bugs.js
+        project.js
+
+3 - Ducks Pattern
+go to src/store
+
+some rules for ducks
+ 1. Your reducer must be an `export default`
+ 2. you need to `export` each individual action creators (ie bugAdded)
+ 3. no need to `export` action types as they should only be used in that duck

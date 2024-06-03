@@ -1,0 +1,99 @@
+1 - Intro
+Redux is built on Functional Programming principles.
+
+2- What is Functional Programming?
+One of the many programming paradigms (Functional, OOP, Procedural, Event-driven)
+
+In a nutshell, it's about deconstructing a problem into a bunch of small and reusable function that take some input and return output. They don't mutate data.
+
+Benefits?
+Small functions are more concise, easier to debut easier to test, and scalable.
+
+3 - Functions as First Class Citizens
+In JS, functions are First Class Citizens, meaning they are treated like any other variable.
+They can be 
+*Assigned to a variable, 
+*Passed as an argument, 
+*Returned from other functions
+
+8 - Pure Functions
+A function is "pure" if every time that we call it with the same argument(s), it has the same result(s)
+
+// This is NOT a pure function.
+// The result will be different every time given a number.
+function myFunction(number) {
+    return number * Math.random()
+}
+
+// This is a pure function. If you give it 1, you'll always get 2.
+function myFunction(number) {
+    return number * 2
+}
+
+Pure Functions
+* No Random Values
+* No current date/time
+* No global state (DOM, files, db, etc)
+* No mutation of parameters
+
+We need to make sure that our reducers (coming up soon) are pure functions.
+
+more ex...
+
+function isEligible(age) {
+    return age > minAge
+}
+
+minAge in this case is a global variable which can change. To make it pure, we must pass it as a parameter.
+
+function isEligible(age, minAge) {
+    return age > minAge
+}
+
+Benefits of Pure Functions
+*Self-documenting
+*Easily testable
+*Concurrency
+*Cacheable
+
+9 - Immutability
+Immutability means that once we create an object, it cannot be changed. If we want to change that object we have to make a copy and then change that copy.
+
+Strings are immutable
+Original string unaffected
+let name = "Anthony";
+let newName = name.toUpperCase();
+
+Objects + Arrays are NOT immutable
+let book = {};
+book.title = "...";
+
+JS is not a pure functional language. (it's a multi paradigm lang)
+
+When you use `const` you are not creating an immutable object.
+// this is allowed!
+const book = {};
+book.title = "...";
+// this isn't
+book = {}; // cant reassign to a new object
+
+Immutability Pros
+* Makes our app more predictable
+* Faster change detection
+* Concurrency - we can run this function in parallel
+
+Cons
+* Performance due to all values needing to be copied to new object (only really an issue when dealing with 1000's of objects)
+* Memory overhead (Immutability libraries can help reduce this)
+
+In conclusion, you should not mutate data with Redux.
+
+12 - Enforcing Immutability
+Remember that JS does not prevent object mutations because its not a pure functional programming language
+
+There are libraries to help with this
+* Immutable
+* Immer
+* Mori
+
+

@@ -1,0 +1,46 @@
+GETTING STARTED
+2 - What is Redux?
+
+Redux is a state management library for JavaScript apps.
+
+Can be used with React, Angular, Vue, Vanilla JS.
+
+Why do we need Redux? It helps with keeping different parts of the UI (ie. Components with state) in sync. Allows simplification of code. 
+
+State management solutions
+Flux (Facebook), Mobx, Redux (inspired by Flux)
+
+W/ Redux, all application state is stored in a single repository called a "Store" a single source of truth, single javascript object - think of it as a database for the front-end. Components get the state they need from the store.
+
+Helps with debugging as we have a single place to see how/why/when/where data came from.
+
+In conclusion,
+* Centralizes app state
+* Makes data flow transparent and predictable
+
+3 - Pros and Cons of Redux
+Pros
+* Predictable state changes 
+* Centralized state 
+* Easy debugging
+* Cache/preserve page state
+* Undo/redo
+* Large and growing ecosystem of add-ons
+Cons
+* Complexity - based on functional programming principles.
+* Verbosity - code has a lot of required boilerplate (however there is modern and more concise ways to write redux)
+
+4 - Is Redux for You?
+What problem are you solving?
+When NOT to use Redux
+* Tight Budget
+* Small to medium size app
+* Simple UI/data flow
+* Static data
+
+https://medium.com/@dan_abramov/you-might-not-need-redux-be46360cf367
+
+60%~ of React Projects have Redux - important for react developers!!
+
+5 - Setting up the Dev environment
+Webpack is a module bundler for JS.

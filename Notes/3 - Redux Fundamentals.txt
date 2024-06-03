@@ -1,0 +1,138 @@
+2 - Redux Architecture
+Remember, in Redux we store our application state inside a single JS object called the store. It's the single source of truth, and its accessible by all parts of our UI.
+
+We cannot directly modify or mutate the store.
+
+So we can't write code like this:
+store.currentUser = { name: "Mosh" }
+
+instead, we have to create a function that takes the store as an object and returns the updated store.
+
+function reducer(store, action) {
+    // return updated store
+    // option 1 - create a shallow copy of the store
+    const updated = {...store};
+    updated.products = ???
+    // option 2 - use one of the immutability libraries 
+}
+
+Functions that update are colloquially called "reducers" in Redux
+
+A reducer is a pure function that takes the current instance of a store, and returns the updated store.
+
+A reducer should also take in an `action` parameter to know what to update in the store
+
+An action is just a plain JS object that explains what happened.
+
+The basic flow is that when a user performs an action (IE, adding an item to their shoping cart)
+    1 - We create an action object, and dispatch it to the store(the store has a dispatch method)
+    2 - The store forwards the action to the reducer. We don't call the reducer directly, only the store
+    3 - The reducer computes the new state and returns it to the store.
+    4 - The store sets the state internally and notifies the UI components about the update
+    5 - The UI will pull out the updated data and refresh themselves
+
+3 - Your first Redux app
+
+Steps
+ 1 - Design the store - What do you want to keep in the store?
+ 2 - Define the actions - What actions can a user perform in this app?
+ 3 - Create a reducer(s) - Create one or more reducer(s) that take an action and return updated state
+ 4 - Set up the store - set up store based on reducer(s)
+
+4 - Designing the Store
+We need to decide what we want to keep in the store.
+
+For a bug tracker...
+
+[ 
+    bugs: [
+        {
+            id: 1,
+            description: "",
+            resolved: false
+        }
+    ],
+    currentUser: {}
+]
+
+Two "slices" in our store (bugs, currentUser) means two reducers.
+
+Starting out, our store will just have bugs
+
+[
+    {
+        id: 1,
+        description: "",
+        resolved: false
+    }
+]
+
+5 - Defining the Actions 
+What actions can a user perform in our bug tracking app?
+
+1. Add.
+2. Mark as resolved.
+3. Delete.
+
+Remember, an action is just a plain JS object that describes what happened.
+
+{
+    type: "ADD_BUG",
+    description: "..."
+}
+
+Redux expects a type property. It can be a string, or any other data that's serializable (so NO bigint.). Can be a number as well, but not recommended because numbers aren't descriptive. `_` or past tense are common naming conventions ie "bugAdded".
+
+description is the data associated with the action. So when a user types in text box to add a bug... it would be stored in description. 
+
+In a real app, we would store all extra attributes in this object ie REPORTED_BY, SEVERITY
+
+In Flux, 
+{
+    type: "ADD_BUG",
+    payload: {
+        description: "..."
+    }
+}
+
+payload contains the minimum info we need about an action.
+
+{
+    type: "bugRemoved",
+    payload: {
+        id: 1
+    }
+}
+
+6 - creating a reducer 
+go to src/reducer.js
+
+7 - creating a store
+go to src/store.js
+
+8 - dispatching actions
+go to index.js
+
+9 - subscribing to the store
+go to index.js
+
+10 - Action Types 
+go to index.js
+
+Review of Redux workflow - 
+    1. When we dispatch an action, our store is going to call reducer.
+    2. Reducer is going to give it the current state, and the action we dispatched.
+    3. Based on the type of action, we get some new state.
+
+What does .dispatch() source code look like?
+
+//internal state of store
+state = reducer(state, action);
+//notify the subscribers
+
+One issue with current implementation is that if we decude to change the name of "bugAdded" we have to change it in multiple places. Can remedy this with "Action Types"
+
+src/actionTypes.js
+
+11 - Action Creators
+Another problem we have currently is how we dispatch an action... go to index.js

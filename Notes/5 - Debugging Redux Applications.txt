@@ -1,0 +1,37 @@
+2 - Installing Redux DevTools
+*installed*
+right click any web page and select "Redux DevTools"
+
+4 - Inspector Monitor
+to idenfity source of problems,
+    1 - look at whether the right action was dispatched.
+    2 - if it was, look at the action tab to see if that action was carrying the correct data
+    3 - if it has the right data, look at state tab to see if it's updated properly.
+    4 - if the state is complex, you can use the Diff tab to see what exactly was changed.
+    5 - if the state is not updated properly, that indicates a problem with the reducer, as that's the building block for updating the state.
+
+5 - Tracing
+In Redux Dev Tools, you can use the "Trace" tab to see where in your source code you dispatched a given action
+
+It's not enabled by default.
+
+use npm i redux-devtools-extension
+
+this allows us to customize our store config
+
+go to store.js
+
+Go to Extensions -> Redux devtools -> Options -> external editor: vscode & set absolute path to something similar to D:\Programming_With_Mosh\Redux_Course\Source Code\
+This will allow you to click on the line of code in Trace and be taken directly to that code in Vscode
+
+6 - Exporting and Importing the store
+We can store all user interactions in a single JSON file and reload the state from that JSON file later on.
+
+So we don't have to launch the app and follow all the users steps to reproduce bug. We can just reload our app in the same state as the user.
+
+Theres a tool called Log Rocket that gives you this feature for every one of your users in production
+
+in React Dev Tools... 
+Click the "export to file" button on bottom left
+
+To load a state file click the "import from a file" button
