@@ -44,3 +44,24 @@ some rules for ducks
  1. Your reducer must be an `export default`
  2. you need to `export` each individual action creators (ie bugAdded)
  3. no need to `export` action types as they should only be used in that duck
+
+4 - Redux Toolkit
+Redux Toolkit is a library that helps simplify your redux code - has a lot of helper functions
+
+npm i @reduxjs/toolkit (or look at official doc as the command may change)
+
+npm i @reduxjs/toolkit@1.2.5 (for this course)
+
+5 - Creating the Store
+go to src/store/configureStore.js
+
+6 - Creating actions
+go to src/store/bugs.js
+
+7 - Creating Reducers
+go to src/store/bugs.js
+
+8 - Creating Slices
+go to src/store/bugs.js
+
+In Redux Toolkit, there is `createSlice` which is a function automatically creates actions and a reducer for us.

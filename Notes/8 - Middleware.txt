@@ -1,0 +1,31 @@
+1 - Intro 
+
+Middleware is the building block that allows us to run side effects, such as calling APIs.
+
+2 - What is Middleware?
+
+When dispatching actions, we're sending them through a single entry point.
+
+Once it reaches the root reducer, it will be passed down to the appropriate child reducer
+
+In this pipeline, we can add functions that would get executed every time an action is dispatched. This is what we call middleware because it sits in the middle.
+
+So in Redux, middleware is code that is executed after an action is dispatched, but before it reaches the reducer.
+
+*Calling APIs,
+*Error reporting
+*Analytics
+*Authorization
+
+3 - Creating Middleware
+go to store/middleware
+
+4 - Parameterizing Middleware
+go to configureStore
+
+5 - Dispatching Functions
+Remember that in Redux, actions should be plain objects with a type property.
+
+go to index.js
+
+We can give the store the ability to dispatch functions by giving it a middleware function

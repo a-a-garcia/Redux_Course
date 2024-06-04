@@ -1,0 +1,159 @@
+1 - Intro 
+At this point, we've covered all the Redux basics. Now, we will hone in on moy advanced topics, starting with the store
+
+2 - Redux State vs Local state
+Let's look at 2 ways to organize state in the Redux store
+
+    1. Store Global State - Only put global data in Redux store. So if the state is used by multiple components
+
+    IE. Only putting the current user and cart in store
+        {
+            cart: {},
+            user: {}
+        }
+
+    (not preferred by Mosh)
+    In this case, better to drop Redux and just use context objects in react
+
+    2. Store All State - put ALL data in Redux store.
+        * Unified data access
+        * Cacheability
+        * Easier debugging (w redux dev tools)
+        * More testable code
+        cost - have to write more redux code
+    
+    EXCEPTION: Form state
+        * Temporary values, so no use in storing user typed values in state
+        * Too many dispatches on keystroke
+        * Harder to debug
+
+Bottom line: The more state we put in the store, the more we can get out of Redux. (with some exceptions)
+
+3 - Structure a Redux Store
+some best practices:
+
+current implementation:
+[
+    { id: 1, description: "", resolved: false},
+    { ... },
+    { ... }
+]
+
+We can use an object instead of an array
+{
+    { id: 1, description: "", resolved: false},
+    { ... },
+    { ... }
+}
+
+Pros:
+    * can very quickly look up a bug by id. slow operation because we have to iterate over an array
+        state[1]
+        
+        vs.
+
+        const index = state.findIndex(bug => bug.id === 1)
+        state[index]
+
+    Need fast looks ups ? use object
+    Need ordered data ? use array
+
+    If you need both, you can use combo of two:
+    {
+        byId: {
+            1: {...}
+            2: {...}
+            3: {...}
+        },
+        allIds: [3, 1, 2]
+    }
+    we can use `byId` to quickly look up
+    if user reorders bugs we can use/update `allIds`
+
+Let's assume we want to use array of objects
+
+[
+    { id: 1, description: "", resolved: false},
+    { ... },
+    { ... }
+]
+
+And we have 3 slices 
+
+{
+    bugs: [],
+    projects: [],
+    tags: []
+}
+
+Not required, by recommended to organize with by encasing in an `entities` object to represent the entities in our app
+
+{
+    entities {
+        bugs: [],
+        projects: [],
+        tags: []
+    }
+}
+
+We can have another top level slice like auth, UI
+
+UI is where we can store state specific to certain pages or components. ( they're different from entities )
+
+{
+    entities: { ... },
+    auth: { userId: 1, name: "John" },
+    ui: {
+        bugs: { query: "...", sortBy: "..." }
+    }
+}
+
+4 - Combining Reducers
+So far we have 2 slices, bugs and projects. Each exposes a reducer function.
+However, we're only using a reducer from /projects.
+
+go to store/reducer.js, and store/entities.js
+
+5 - Normalization
+
+In designing a redux store, we should have normalization. This just means we should not have duplicate data in our store.
+
+[
+    {
+        id: 1,
+        description: "",
+        project: { id: 1, name: "a"}
+    },
+    {
+        id: 1,
+        description: "",
+        project: { id: 1, name: "a"}
+    }
+]
+
+If the same project exists in two parent objects, and user updates that project, we have to update in multiple places in our store... so remove the nested object and identify by id
+
+[
+    {
+        id: 1,
+        description: "",
+        projectId: 1
+    },
+    {
+        id: 1,
+        description: "",
+        projectId: 1
+    }
+]
+
+If we need to know more about projectId:1, we can always look it up in the project slice.
+
+If you're using an API, you may be returned non-normalized, hierarchical data. You can use a library like `normalizr` to normalize your data
+
+6 - Selectors 
+go to index.js - `getUnresolvedBugs`
+
+7 - Memoizing Selectors with Reselect
+There's currently an issue with getUnresolvedBugs in the bugs.js slice...
+
+It returns a new array everytime the selector is called.
