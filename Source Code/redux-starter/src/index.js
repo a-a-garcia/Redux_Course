@@ -149,24 +149,71 @@
 
 //DISPATCHING FUNCTIONS
 import configureStore from "./store/configureStore";
+// not used anymore as not calling API here.
+import * as actions from './store/api';
+import { loadBugs } from "./store/bugs";
 const store = configureStore();
 
 // we can't dispatch an object that has no type property
 // store.dispatch({})
 
 // we also cannot dispatch a function without some refactoring..
-store.dispatch((dispatch, getState) => {
-    // Call an API
-    // When promise is resolved => dispatch()
-    dispatch({ type: 'bugsReceived', bugs: [1,2,3]})
-    console.log(getState())
-    // If the promise is rejected => dispatch()
-})
+// store.dispatch((dispatch, getState) => {
+//     // Call an API
+//     // When promise is resolved => dispatch()
+//     dispatch({ type: 'bugsReceived', bugs: [1,2,3]})
+//     console.log(getState())
+//     // If the promise is rejected => dispatch()
+// })
 
-// testing toast.js middleware
-store.dispatch({
-    type: "error",
-    payload: {
-        message: "An error occurred."
-    }
-})
+// // testing toast.js middleware
+// store.dispatch({
+//     type: "error",
+//     payload: {
+//         message: "An error occurred."
+//     }
+// })
+
+
+// removed in favor of using createAction from store/api
+// store.dispatch({
+//     type: 'apiCallBegan', // apiRequest,
+//     payload: {
+//         url: '/bugs',
+//         // GET is the default, so don't need to specify the method
+//         // method: 'get',
+
+//         // no data needed for this all
+//         // data: {},
+//         onSuccess: 'bugsReceived',
+//         onError: 'apiRequestFailed'
+//     }
+// })
+
+// no longer need to pass an entire action object, just the payload
+// using an actionCreator (.apiCallBegan) is much easier and safer
+
+// store.dispatch(actions.apiCallBegan({
+//     url: '/bugs',
+
+//     // GET is the default, so don't need to specify the method
+//     // method: 'get',
+
+//     // no data needed for this all
+//     // data: {},
+
+//     onSuccess: 'bugs/bugsReceived',
+
+//     // removing this, because it can be handled in the api middleware, in the catch block
+//     // onError: actions.apiCallFailed.type
+// }))
+
+// Some problems to address:
+// 1. We don't need to expose the url and onSuccess to the UI layer.
+// ideally, dispatch action should look like: store.dispatch(loadBugs())
+
+// Refactored:
+store.dispatch(loadBugs());
+
+// simulate loading
+setTimeout(() => store.dispatch(loadBugs()), 2000)

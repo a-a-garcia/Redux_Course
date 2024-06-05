@@ -1,0 +1,77 @@
+3 - The Approach
+
+Remember that with the func middleware, we can dispatch functions (with Redux Toolkit this functionality comes out of the box). This allows us to execute code that causes side effects, like calling APIs.
+
+Remember, we cannot call APIs in our reducers. Because reducers should be pure. They should get the current state, and return the new state. That's it. (makes them easy to test)
+
+So where do we put API calls?
+
+In action creators!
+
+Normally an action creator returns an object
+
+function actionCreator() {
+    return { type: "..." };
+}
+
+But with the func middleware, we can return a function
+
+function actionCreator() {
+    // Redux func automatically passes dispatch, getState
+    // But if we don't need the current state we don't have to pass getState
+
+    return function(dispatch, getState) {
+        // where we encapsulate code w/ side effects
+    }
+}
+
+// arrow syntax, not needing to access getState
+
+const actionCreator = () => {
+    return (dispatch) => {
+
+    }
+}
+
+// refactoring since we only have one statement that is a return 
+
+const actionCreator = () => (dispatch) => {
+        // Call API - returns a promise
+        // If promise resolves: dispatch(success)
+        // If promise rejected: dispatch(error)
+            // either way then a reducer will catch it and dispatch a new action
+    }
+}
+
+Naming conventions
+Present
+GET_BUGS_REQUEST..
+
+Past
+bugsRequested
+
+The problem w/ the current implementation is we have to repeat this code as implement more features. Every time we need to talk to the server we have to do these 3 things, call api + resolve + reject. 
+
+We can implement this structure with middleware!
+
+4 - API middleware
+go to middleware/api.js
+
+5 - Actions
+go to middleware/api.js
+
+6 - Restructuring The Store
+go to bugs.js
+
+7 - Getting Data from the Server
+go to index.js
+
+8 - Loading Indicators
+How to display loading:
+    1. Define a new action: bugsRequested    
+    2. Define a new reducer for handling this action: loading = true
+    3. Change middleware to dispatch new action BEFORE making API call.
+go to bugs.js
+
+9 - Caching
+go to middleware/api.js

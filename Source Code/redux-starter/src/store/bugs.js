@@ -5,25 +5,37 @@
 
 import { createAction, createReducer, createSlice } from "@reduxjs/toolkit";
 import { createSelector } from "reselect";
+import { apiCallBegan } from "./api";
+import api from "./middleware/api";
 
 let lastId = 0
 const slice = createSlice({
     name: 'bugs',
-    initialState: [],
+    // initial state does not necessarily have to be a plain array
+    // initialState: [],
+    initialState: {
+        list: [],
+        // loading - useful for UI to display loading styles
+        loading: false,
+        // lastFetch - is the timestamp of the last time we fetched the data from the server
+        // initally null since we haven't called the server yet
+        // useful for caching - for ex if we got the bugs 5 minutes ago, we don't need to fetch them again, we can use what we currently have in the store
+        lastFetch: null
+    },
     reducers: {
         bugAssignedToUser: (bugs, action) => {
             // we need the id of bug and the id of the user to represent this event.
             // object destructure from the payload
             const { bugId, userId } = action.payload
-            const index = bugs.findIndex(bug => bug.id === bugId)
-            bugs[index].userId = userId
+            const index = bugs.list.findIndex(bug => bug.id === bugId)
+            bugs.list[index].userId = userId
         },
 
         // maps actions => action handlers
         // bugsAdded is not an object that we defined earlier, so we can't set it dynamically.
         // createSlice automatically creates action types and action creators for us, so this will be the only place where the reducer action creator is defined.
         bugAdded: (bugs, action) => {
-            bugs.push(
+            bugs.list.push(
                 {
                     id: ++lastId,
                     description: action.payload.description,
@@ -33,8 +45,26 @@ const slice = createSlice({
         },
 
         bugResolved: (bugs, action) => {
-            const index = bugs.findIndex(bug => bug.id === action.payload.id)
-            bugs[index].resolved = true;
+            const index = bugs.list.findIndex(bug => bug.id === action.payload.id)
+            bugs.list[index].resolved = true;
+        },
+        //new reducer to handle bugsReceived
+        // when we use Redux Toolkit, the name of this action is actually bugs/bugsReceived. So we need to go to index.js and change the onSuccess to bugs/bugsReceived
+        bugsReceived: (bugs, action) => {
+            //action.payload is the bugs from the server
+            bugs.list = action.payload
+            // once we receive bugs from server, set .loading to false
+            bugs.loading = false;
+        },
+
+        // implment loading 
+        bugsRequested: (bugs, action) => {
+            bugs.loading = true;
+        },
+
+        // handle if bugsRequested fails. loading needs to be set back to false
+        bugsRequestFailed: (bugs, action) => {
+            bugs.loading = false
         }
     }
 })
@@ -42,8 +72,33 @@ const slice = createSlice({
 console.log(slice)
 //export the reducer
 export default slice.reducer
-//export the actions. slice.actions is an object. use object destructuring to destructure the needed properties. export them outside of this module
-export const { bugAdded, bugResolved, bugAssignedToUser} = slice.actions
+//export the ACTIONS IN THE REDUCER. slice.actions is an object. use object destructuring to destructure the needed properties. export them outside of this module
+export const { 
+    bugAdded, 
+    bugResolved, 
+    bugAssignedToUser,
+    bugsReceived,
+    bugsRequested,
+    bugsRequestFailed
+} = slice.actions
+
+// ACTION CREATORS - for "unpure" functions
+
+//for demonstration
+const url = "/bugs"
+
+export const loadBugs = () => apiCallBegan({ 
+    // in a real app we don't want to hardcode the url. Can be in a config file
+    url: url,
+
+    // we also don't want this hardcoded. We want to get this from the appropriate reducer. (bugsReceived is a function, can access its type)
+    onSuccess: bugsReceived.type,
+
+    onStart: bugsRequested.type,
+
+    //dispatch bugsRequestFailed if failed.
+    onError: bugsRequestFailed.type
+})
 
 // This is what is called a "Selector" function.
 // It's a function that takes the state and returns the computed state.

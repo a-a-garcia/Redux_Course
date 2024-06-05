@@ -15,6 +15,7 @@ import reducer from "./reducer"
 // import middleware
 import logger from './middleware/logger'
 import toast from './middleware/toast'
+import api from './middleware/api'
 
 // export default store;
 
@@ -33,11 +34,13 @@ export default function () {
         middleware: [
             // use spread operator to copy the array of middleware functions
             ...getDefaultMiddleware(),
+            
             // additional middleware
             logger({destination : 'console'}),
             // `func` middleware unnecessary, comes with Redux Toolkit 
             // func
-            toast
+            toast,
+            api
         ]
      })
 }
